@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -16,14 +17,14 @@ import com.zari.matan.navigationdrawerexample.R;
  */
 public class ListViewItemAnimation {
 
-    FrameLayout itemBackground;
+    ViewGroup itemBackground;
     Context context;
     View listItem;
     ListView mListView;
     SwipeCallback swipeCallback;
     int socialBgColor;
 
-    public ListViewItemAnimation(Context context, View listItem, ListView listView, SwipeCallback SwipeCallback, FrameLayout itemBackground) {
+    public ListViewItemAnimation(Context context, View listItem, ListView listView, SwipeCallback SwipeCallback, ViewGroup itemBackground) {
         this.context = context;
         this.listItem = listItem;
         mListView = listView;
@@ -93,7 +94,7 @@ public class ListViewItemAnimation {
                     if (mSwiping) {
                         if (x < mDownX) {
                             listItem.setTranslationX((x - mDownX));
-                            listItem.setAlpha(1 - deltaXAbs / listItem.getWidth());
+                           // listItem.setAlpha(1 - deltaXAbs / listItem.getWidth());
                         } else
                             mSwiping = false;
                     }
@@ -138,7 +139,7 @@ public class ListViewItemAnimation {
                                     @Override
                                     public void run() {
                                         // Restore animated values
-                                        listItem.setAlpha(1);
+                                        //listItem.setAlpha(1);
                                         listItem.setTranslationX(0);
                                         if (openUrl) {
                                             swipeCallback.onSwipe();
