@@ -1,6 +1,7 @@
 package com.zari.matan.navigationdrawerexample.Network;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 import com.zari.matan.navigationdrawerexample.MainActivity;
@@ -72,7 +73,8 @@ public class MainHttpTask extends AsyncTask<Request, Void, Request> {
         if (req != null){
             req.callback.handleResponse(req.responseStr);
 
-        }
+        }else
+            Log.e("no result","no result");
     }
 
 

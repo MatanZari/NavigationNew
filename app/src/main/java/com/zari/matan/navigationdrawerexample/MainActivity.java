@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +19,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.youtube.player.YouTubePlayer;
-import com.zari.matan.navigationdrawerexample.com.zari.matan.fragment.BlueFragment;
-import com.zari.matan.navigationdrawerexample.com.zari.matan.fragment.GreenFragment;
-import com.zari.matan.navigationdrawerexample.com.zari.matan.fragment.RedFragment;
 import com.zari.matan.navigationdrawerexample.fragments.DiscoverFragment;
 import com.zari.matan.navigationdrawerexample.fragments.HomeFragment;
 import com.zari.matan.navigationdrawerexample.fragments.ProfileFragment;
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     };
-    public static boolean isInternetAvailable;
 
     public final String SP_NAME = "MyPrefs";
 
@@ -66,12 +62,18 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences(SP_NAME, MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+        assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         container = (FrameLayout) findViewById(R.id.container);
         navDrawer = (NavigationView) findViewById(R.id.navigation);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        navDrawer.getMenu().getItem(0).setChecked(true);
+        switchFragments(container.getId(), fragments[0]);
+        if (!mUserLearnedDrawer){
+             mDrawerLayout.openDrawer(GravityCompat.START);
+            saveToPrefs(this,KEY_DRAWER_OPENED,String.valueOf(true));
+        }
         setDrawer(mDrawerLayout, toolbar);
         navDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 if (!mUserLearnedDrawer) {
-                    saveToPrefs(MainActivity.this, KEY_DRAWER_OPENED, mUserLearnedDrawer + "");
                     supportInvalidateOptionsMenu();
                     drawerOpen = true;
                 }

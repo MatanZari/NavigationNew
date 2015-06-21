@@ -1,10 +1,12 @@
 package com.zari.matan.navigationdrawerexample.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,7 @@ import static com.zari.matan.navigationdrawerexample.MainActivity.mYoutubePlayer
 
 public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper, ExpendImage, AbsListView.OnScrollListener {
 
+    public static final String TAG = HomeFragment.class.getName();
     public ListView listView;
     View v;
     MainActivity activity;
@@ -68,12 +71,14 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
+        Log.wtf(TAG, "onCreate");
 
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreateView");
         v = inflater.inflate(R.layout.home_fragment_layout, container, false);
         listView = (ListView) v.findViewById(R.id.home_feed);
         zoomContainer = (RelativeLayout) v.findViewById(R.id.zoom_image_container);
@@ -84,6 +89,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.wtf(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
         if (activity.isInternetConnected()) {
             httpTask = new MainHttpTask(activity);
@@ -280,5 +286,77 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         return LayoutInflater.from(context).inflate(R.layout.home_fragment_layout,null,false);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.wtf(TAG, "onDestroyView");
+        adapter = null;
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.wtf(TAG,"onActivityCreated");
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.wtf(TAG, "onViewStateRestored");
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.wtf(TAG, "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.wtf(TAG, "onResume");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.wtf(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.wtf(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.wtf(TAG, "onStop");
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Log.wtf(TAG, "onLowMemory");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.wtf(TAG, "onDestroy");
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.wtf(TAG, "onDetach");
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.wtf(TAG, "onAttach");
+    }
 }
