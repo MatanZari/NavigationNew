@@ -3,7 +3,6 @@ package com.zari.matan.navigationdrawerexample.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.lyuzik.remoteimageview.RImageView;
 import com.zari.matan.navigationdrawerexample.FeedAdapter;
 import com.zari.matan.navigationdrawerexample.MainActivity;
-
 import com.zari.matan.navigationdrawerexample.R;
 import com.zari.matan.navigationdrawerexample.fragments.HomeFragment;
 import com.zari.matan.navigationdrawerexample.helper.BackgroundContainer;
@@ -89,7 +87,6 @@ public class ImageItem implements FeedItem, View.OnClickListener, ListViewItemAn
             holder.text = text;
             holder.itemBackground = itemBackground;
             convertView.setTag(holder);
-            Log.e("getView","newView");
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -100,14 +97,13 @@ public class ImageItem implements FeedItem, View.OnClickListener, ListViewItemAn
         // holder.image.setAdjustViewBounds(true);
         int fff = dp * 300;
         holder.image.setTargetSize(fff, fff);
-        holder.image.loadImageBitmap(itemData.img);
+        holder.image.loadImageBitmap(itemData.thumbnail);
         holder.time.setText(itemData.dateShort + " ago on " + context.getString(itemData.sourceStrId));
         holder.name.setText(itemData.collData.title);
         holder.text.setText(itemData.text);
         holder.image.setOnClickListener(this);
 
         if (itemData.externalUrl != null) {
-            Log.e("itemData.socialBgColor",itemData.socialBgColor+"");
             itemAnimation = new ListViewItemAnimation(context, holder.image,listView, this, holder.itemBackground);
             itemAnimation.setSocialBgColor(itemData.socialBgColor);
             holder.image.setOnTouchListener(itemAnimation.mTouchListener);

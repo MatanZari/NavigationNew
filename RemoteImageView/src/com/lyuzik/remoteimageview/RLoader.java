@@ -318,10 +318,10 @@ public class RLoader {
 						}
 						return result;
 					} catch (IOException e) {
-						if (RImageView.WARN) {
+
 							Log.w(RImageView.TAG, "load bitmap failed. url:"
 									+ url, e);
-						}
+
 					} catch (OutOfMemoryError e) {
 						mCache.clear();
 						System.gc();

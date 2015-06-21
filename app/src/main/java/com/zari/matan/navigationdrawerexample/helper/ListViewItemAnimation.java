@@ -1,16 +1,13 @@
 package com.zari.matan.navigationdrawerexample.helper;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-
-import com.zari.matan.navigationdrawerexample.R;
 
 /**
  * Created by Matan on 5/31/2015
@@ -29,7 +26,6 @@ public class ListViewItemAnimation {
         this.listItem = listItem;
         mListView = listView;
         this.swipeCallback = SwipeCallback;
-
         this.itemBackground = itemBackground;
     }
 
@@ -37,18 +33,11 @@ public class ListViewItemAnimation {
         this.socialBgColor = socialBgColor;
     }
 
-    // BackgroundContainer mBackgroundContainer;
     boolean mSwiping = false;
     boolean mItemPressed = false;
-    private static final int SWIPE_DURATION = 250;
+    private static final int SWIPE_DURATION = 350;
 
 
-
-//    public void setBackgroundContainer(BackgroundContainer mBackgroundContainer) {
-//        this.mBackgroundContainer = mBackgroundContainer;
-//
-//
-//    }
 
     public View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         float mDownX;
@@ -73,7 +62,6 @@ public class ListViewItemAnimation {
                 case MotionEvent.ACTION_CANCEL:
                     listItem.setAlpha(1);
                     listItem.setTranslationX(0);
-                    Log.e("ACTION_CANCEL", "ACTION_CANCEL");
                     if (itemBackground != null)
                         itemBackground.setBackgroundColor(Color.parseColor("#ffffff"));
                     mItemPressed = false;
@@ -88,20 +76,17 @@ public class ListViewItemAnimation {
                             mSwiping = true;
                             mListView.requestDisallowInterceptTouchEvent(true);
                             itemBackground.setBackgroundColor(context.getResources().getColor(socialBgColor));
-                           //mBackgroundContainer.showBackground(listItem.getTop(), listItem.getHeight());
                         }
                     }
                     if (mSwiping) {
                         if (x < mDownX) {
                             listItem.setTranslationX((x - mDownX));
-                           // listItem.setAlpha(1 - deltaXAbs / listItem.getWidth());
                         } else
                             mSwiping = false;
                     }
                 }
                 break;
                 case MotionEvent.ACTION_UP: {
-                    Log.e("ACTION_UP","ACTION_UP");
                     // User let go - figure out whether to animate the view out, or back into place
                     if (mSwiping) {
 
@@ -134,27 +119,38 @@ public class ListViewItemAnimation {
                         long duration = (int) ((1 - fractionCovered) * SWIPE_DURATION);
                         mListView.setEnabled(false);
                         listItem.animate().setDuration(duration).
-                                alpha(endAlpha).translationX(endX).
-                                withEndAction(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // Restore animated values
-                                        //listItem.setAlpha(1);
-                                        listItem.setTranslationX(0);
-                                        if (openUrl) {
-                                            swipeCallback.onSwipe();
-                                            mListView.setEnabled(true);
-                                            itemBackground.setBackgroundColor(0);
-                                        } else {
-                                            //mBackgroundContainer.hideBackground();
-                                            mSwiping = false;
-                                            mListView.setEnabled(true);
+                                alpha(endAlpha).translationX(endX).setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
 
-                                            itemBackground.setBackgroundColor(0);
-                                        }
-                                    }
-                                });
-                    }else{
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                listItem.setTranslationX(0);
+                                if (openUrl) {
+                                    swipeCallback.onSwipe();
+                                    mListView.setEnabled(true);
+                                    itemBackground.setBackgroundColor(0);
+                                } else {
+                                    mSwiping = false;
+                                    mListView.setEnabled(true);
+
+                                    itemBackground.setBackgroundColor(0);
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                    } else {
                         v.performClick();
                         mListView.setEnabled(true);
                     }
@@ -168,7 +164,6 @@ public class ListViewItemAnimation {
             return true;
         }
     };
-
 
 
     public interface SwipeCallback {
