@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         if (activity.isInternetConnected()) {
             httpTask = new MainHttpTask(activity);
             Request request = new Request();
-            request.urlStr = "http://wolflo.com/walls/system/ynetnews/all?skip=0&limit=30";
+            request.urlStr = "http://wolflo.com/walls/system/cnn/all?skip=0&limit=30";
             request.callback = homeCallback;
             executor = new Executor();
             executor.execute(httpTask, request);
