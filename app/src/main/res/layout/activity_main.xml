@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#d3d3d3"
+    >
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +29,9 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/my_toolbar">
+            android:layout_below="@+id/my_toolbar"
+            android:padding="4dp"
+            >
 
         </FrameLayout>
 

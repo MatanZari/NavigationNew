@@ -3,7 +3,9 @@
     android:id="@+id/scrollable_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/rounded_corner"
+    >
 
     <com.zari.matan.navigationdrawerexample.helper.BackgroundContainer
         android:id="@+id/listBackgroundContainer"
