@@ -33,7 +33,6 @@
         android:textColor="@color/colorSecondaryText"
         />
 
-
 </LinearLayout>
     <TextView
         style="?android:attr/listSeparatorTextViewStyle"
