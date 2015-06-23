@@ -50,6 +50,8 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
     HomeFragment homeFragment;
     View homeLayout;
     FrameLayout current;
+    private int position;
+    private boolean isInitialized;
 
 
     public YouTubeVideo(Context context, ItemData itemData) {
@@ -117,7 +119,7 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
 
         if (mYoutubePlayer != null && mVideo != null) {
             Log.wtf("mYoutubePlayer", "!null");
-            if (mYoutubePlayer.isPlaying() || isLoading) {
+            if (mYoutubePlayer.isPlaying() || isLoading || !isInitialized) {
                 Log.wtf("isPlaying() || isLoading", "true");
 
                 // setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
@@ -135,23 +137,26 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
                 }
             }
         }
+        HomeFragment.clickedPosition = position;
         holder.thumbnail.setTag(itemData.videoUrl);
         thumbnailTag = (String) holder.thumbnail.getTag();
         holder.videoContainer.setId(MainActivity.generateViewId());
         holder.videoContainer.setTag(itemData.videoUrl);
         containerTag = (String) holder.videoContainer.getTag();
         mVideo = YouTubePlayerSupportFragment.newInstance();
-
+        isInitialized = false;
         final String videoUrl = itemData.videoUrl;
         showVideo(mVideo);
         mVideo.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                isInitialized = true;
                 if (!wasRestored) {
                     mYoutubePlayer = youTubePlayer;
                     mYoutubePlayer.loadVideo(videoUrl);
                     mYoutubePlayer.setPlaybackEventListener(YouTubeVideo.this);
                     mYoutubePlayer.setPlayerStateChangeListener(YouTubeVideo.this);
+                    mYoutubePlayer.setShowFullscreenButton(false);
                 } else
                     Log.e("wasRestored", "true");
             }
@@ -214,7 +219,6 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
     public void onVideoStarted() {
         isLoading = false;
         isPlaying = true;
-
     }
 
     @Override
@@ -235,6 +239,10 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
             mYoutubePlayer = null;
             Toast.makeText(context, R.string.youtube_error, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
 

@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     YouTubeVideo ytv;
     public static boolean isFirstPlaying;
     int firstVisible;
+    public static int clickedPosition;
 
 
 
@@ -100,7 +101,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         if (activity.isInternetConnected()) {
             httpTask = new MainHttpTask(activity);
             Request request = new Request();
-            request.urlStr = "http://wolflo.com/walls/system/nba/all?skip=20&limit=30";
+            request.urlStr = "http://wolflo.com/walls/system/nba/all?skip=20&limit=100";
             request.callback = homeCallback;
             executor = new Executor();
             executor.execute(httpTask, request);
@@ -221,7 +222,9 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                     } else if (itemData.type.equals("video") && !itemData.source.equals("youtube") && !itemData.source.equals("vimeo")) {
                         data.add(new MP4VideoItem(activity, itemData));
                     } else if (itemData.type.equals("video") && itemData.source.equals("youtube")) {
-                        data.add(new YouTubeVideo(activity, itemData));
+                        YouTubeVideo youTubeVideo = new YouTubeVideo(activity,itemData);
+                        youTubeVideo.setPosition(i);
+                        data.add(youTubeVideo);
                     } else if (itemData.type.equals("post")) {
                         if (itemData.source.equals("rss"))
                             data.add(new RSSPostItem(itemData, activity));
@@ -256,7 +259,6 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         for (int i = 0; i < visibleItemCount; i++) {
             View listItem = view.getChildAt(i);
             int viewType = adapter.getItemViewType(firstVisibleItem);
-
             if (i == 0) {
                 if (mMediaPlayer != null && viewType == FeedAdapter.types.MP4VIDEO.ordinal() && MP4VideoItem.mController != null) {
                     if (listItem.getTop() < -listItem.getHeight() * 0.75) {
@@ -276,7 +278,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                     }
                     ytv = (YouTubeVideo) adapter.getItem(firstVisibleItem);
                     if (listItem.getTop() < -listItem.getHeight() / 2) {
-                        if (isFirstPlaying) {
+                        if (isFirstPlaying && clickedPosition == firstVisibleItem) {
                             ytv.onVideoEnded();
                             isFirstPlaying = false;
                         }
