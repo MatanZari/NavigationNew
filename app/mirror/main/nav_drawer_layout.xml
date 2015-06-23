@@ -1,4 +1,4 @@
-<!-- [ Mirror metadata ] generatedAt: 1434621129009 -->
+<!-- [ Mirror metadata ] generatedAt: 1434966883793 -->
 <!-- Generated screen file. Fill the id tags below with content with
 which to populate your previewed layout. For a complete specification
 of sample data, please see http://jimulabs.com/sample-data-specifications/ 
@@ -18,25 +18,25 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <list_view>
             <items layout="@android:layout/simple_list_item_1" >
                 <_item>
-                    <text1>Vancouver</text1>
+                    <text1>Apple</text1>
                 </_item>
                 <_item>
-                    <text1>Cairo</text1>
+                    <text1>Orange</text1>
                 </_item>
                 <_item>
-                    <text1>New York</text1>
+                    <text1>Pear</text1>
                 </_item>
                 <_item>
-                    <text1>San Francisco</text1>
+                    <text1>Grapefruit</text1>
                 </_item>
                 <_item>
-                    <text1>Seattle</text1>
+                    <text1>Banana</text1>
                 </_item>
                 <_item>
-                    <text1>Hong Kong</text1>
+                    <text1>Lemon</text1>
                 </_item>
                 <_item>
-                    <text1>Tokyo</text1>
+                    <text1>Carrot</text1>
                 </_item>
             </items>
                 </list_view>

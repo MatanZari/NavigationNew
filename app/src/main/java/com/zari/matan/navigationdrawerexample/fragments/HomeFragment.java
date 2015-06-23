@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
 import static com.zari.matan.navigationdrawerexample.MainActivity.mMediaPlayer;
 import static com.zari.matan.navigationdrawerexample.MainActivity.mYoutubePlayer;
 
@@ -65,7 +66,9 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     MainHttpTask httpTask;
     Executor executor;
     private boolean isPlayerReset;
-
+    YouTubeVideo ytv;
+    public static boolean isFirstPlaying;
+    int firstVisible;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,7 +97,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         if (activity.isInternetConnected()) {
             httpTask = new MainHttpTask(activity);
             Request request = new Request();
-            request.urlStr = "http://wolflo.com/walls/system/cnn/all?skip=0&limit=30";
+            request.urlStr = "http://wolflo.com/walls/system/nba/all?skip=20&limit=30";
             request.callback = homeCallback;
             executor = new Executor();
             executor.execute(httpTask, request);
@@ -186,7 +189,6 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     }
 
 
-
     Callback homeCallback = new Callback() {
         @Override
         public void handleResponse(String response) {
@@ -211,7 +213,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                             data.add(new ImageItem(activity, itemData, HomeFragment.this));
 
                         else
-                            data.add(new GifItem(activity,itemData));
+                            data.add(new GifItem(activity, itemData));
 
                     } else if (itemData.type.equals("video") && !itemData.source.equals("youtube") && !itemData.source.equals("vimeo")) {
                         data.add(new MP4VideoItem(activity, itemData));
@@ -253,8 +255,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
             int viewType = adapter.getItemViewType(firstVisibleItem);
 
             if (i == 0) {
-                if (mMediaPlayer != null && viewType == FeedAdapter.types.MP4VIDEO.ordinal()) {
-
+                if (mMediaPlayer != null && viewType == FeedAdapter.types.MP4VIDEO.ordinal() && MP4VideoItem.mController != null) {
                     if (listItem.getTop() < -listItem.getHeight() * 0.75) {
                         if (!isPlayerReset) {
                             MP4VideoItem item = (MP4VideoItem) adapter.getItem(firstVisibleItem);
@@ -264,26 +265,31 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                         } else
                             return;
                     }
-
                 } else if (mYoutubePlayer != null
                         && viewType == FeedAdapter.types.YOUTUBEVIDEO.ordinal()) {
-                    if (listItem.getTop() < -listItem.getHeight() / 2) {
-                        YouTubeVideo ytv = (YouTubeVideo) adapter.getItem(firstVisibleItem);
-                        ytv.onVideoEnded();
+                    if (firstVisible != firstVisibleItem) {
+                        firstVisible = firstVisibleItem;
+                        isFirstPlaying = true;
                     }
-
+                    ytv = (YouTubeVideo) adapter.getItem(firstVisibleItem);
+                    if (listItem.getTop() < -listItem.getHeight() / 2) {
+                        if (isFirstPlaying) {
+                            ytv.onVideoEnded();
+                            isFirstPlaying = false;
+                        }
+                    }else
+                        return;
                 } else {
                     isPlayerReset = false;
                     return;
                 }
-
             }
         }
     }
 
-    public  View getViewInstance(Context context){
+    public View getViewInstance(Context context) {
 
-        return LayoutInflater.from(context).inflate(R.layout.home_fragment_layout,null,false);
+        return LayoutInflater.from(context).inflate(R.layout.home_fragment_layout, null, false);
     }
 
     @Override
@@ -296,7 +302,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.wtf(TAG,"onActivityCreated");
+        Log.wtf(TAG, "onActivityCreated");
     }
 
     @Override

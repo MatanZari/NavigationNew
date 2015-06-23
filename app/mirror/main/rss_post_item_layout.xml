@@ -1,4 +1,4 @@
-<!-- [ Mirror metadata ] generatedAt: 1434621129019 -->
+<!-- [ Mirror metadata ] generatedAt: 1434966883881 -->
 <!-- Generated screen file. Fill the id tags below with content with
 which to populate your previewed layout. For a complete specification
 of sample data, please see http://jimulabs.com/sample-data-specifications/ 
@@ -11,6 +11,7 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <postName text="Text literal" textSize="14sp" /> -->
         <postName />
         <postTime />
+        <seperetor />
         <postTitle />
         <postDesc />
     </_content>

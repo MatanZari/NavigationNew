@@ -1,4 +1,4 @@
-<!-- [ Mirror metadata ] generatedAt: 1434621128994 -->
+<!-- [ Mirror metadata ] generatedAt: 1434966883642 -->
 <!-- Generated screen file. Fill the id tags below with content with
 which to populate your previewed layout. For a complete specification
 of sample data, please see http://jimulabs.com/sample-data-specifications/ 
@@ -15,7 +15,7 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <title text="Text literal" textSize="14sp" /> -->
         <title />
         <more />
-        <web_view url="http://jimulabs.com" />
+        <web_view url="http://www.google.com" />
         <customViewContainer>
             <!-- Replace this FrameLayout with a fragment like so:
             <_content layout="@layout/my_fragment_layout">

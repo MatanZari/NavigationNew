@@ -39,6 +39,8 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
         MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnVideoSizeChangedListener,
         View.OnClickListener, MediaPlayer.OnErrorListener, MediaController.MediaPlayerControl {
+
+
     Context context;
     ItemData itemData;
     private MediaPlayer mMediaPlayer;
@@ -48,6 +50,7 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
     private Handler handler = new Handler();
     FrameLayout videoContainer;
     int dp = Utils.getDP1();
+
     public MP4VideoItem(Context context, ItemData itemData) {
         this.context = context;
         this.itemData = itemData;
@@ -230,6 +233,8 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(what + "", extra + "");
+        if (holder.loader.getVisibility() == View.VISIBLE)
+            holder.loader.setVisibility(View.GONE);
         return false;
     }
 
