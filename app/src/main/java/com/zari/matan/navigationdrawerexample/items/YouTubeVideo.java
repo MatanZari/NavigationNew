@@ -48,7 +48,9 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
     public Activity activity;
     public boolean isPlaying;
     HomeFragment homeFragment;
-    public boolean isFirstPlayed;
+    View homeLayout;
+    FrameLayout current;
+
 
     public YouTubeVideo(Context context, ItemData itemData) {
         this.context = context;
@@ -56,6 +58,7 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
         homeFragment = new HomeFragment();
         activity = (MainActivity) context;
         fragmentManager = ((MainActivity) context).getSupportFragmentManager();
+        homeLayout = homeFragment.getViewInstance(context);
     }
 
     @Override
@@ -113,9 +116,9 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
     public void onClick(View v) {
 
         if (mYoutubePlayer != null && mVideo != null) {
-            Log.wtf("mYoutubePlayer","!null");
+            Log.wtf("mYoutubePlayer", "!null");
             if (mYoutubePlayer.isPlaying() || isLoading) {
-                Log.wtf("isPlaying() || isLoading","true");
+                Log.wtf("isPlaying() || isLoading", "true");
 
                 // setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
                 // mYoutubePlayer.release();
@@ -132,7 +135,6 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
                 }
             }
         }
-
         holder.thumbnail.setTag(itemData.videoUrl);
         thumbnailTag = (String) holder.thumbnail.getTag();
         holder.videoContainer.setId(MainActivity.generateViewId());
@@ -150,9 +152,8 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
                     mYoutubePlayer.loadVideo(videoUrl);
                     mYoutubePlayer.setPlaybackEventListener(YouTubeVideo.this);
                     mYoutubePlayer.setPlayerStateChangeListener(YouTubeVideo.this);
-                    mYoutubePlayer.setShowFullscreenButton(false);
-                }else
-                    Log.e("wasRestored","true");
+                } else
+                    Log.e("wasRestored", "true");
             }
 
             @Override
@@ -278,18 +279,13 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.remove(video).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).commit();
         setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
-
-
     }
 
-    public void showVideo(YouTubePlayerSupportFragment video) {
+    public void showVideo(final YouTubePlayerSupportFragment video) {
         removePlaying(video);
         android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-        FrameLayout current = (FrameLayout) holder.root.findViewWithTag(itemData.videoUrl);
+        current = (FrameLayout) holder.root.findViewWithTag(itemData.videoUrl);
         transaction.add(current.getId(), video).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-        setVideoLoadingAnimation(holder.thumbnail, 1.0f, 0);
-
-
     }
 
 

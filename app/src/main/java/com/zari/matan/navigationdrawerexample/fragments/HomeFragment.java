@@ -1,5 +1,6 @@
 package com.zari.matan.navigationdrawerexample.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -69,6 +70,8 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     YouTubeVideo ytv;
     public static boolean isFirstPlaying;
     int firstVisible;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -277,7 +280,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                             ytv.onVideoEnded();
                             isFirstPlaying = false;
                         }
-                    }else
+                    } else
                         return;
                 } else {
                     isPlayerReset = false;
@@ -287,6 +290,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         }
     }
 
+    @SuppressLint("InflateParams")
     public View getViewInstance(Context context) {
 
         return LayoutInflater.from(context).inflate(R.layout.home_fragment_layout, null, false);
