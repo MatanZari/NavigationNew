@@ -3,6 +3,8 @@ package com.zari.matan.navigationdrawerexample.items;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -116,56 +119,62 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
 
     @Override
     public void onClick(View v) {
+        if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(context).name().equals( YouTubeInitializationResult.SUCCESS.name())) {
+            if (mYoutubePlayer != null && mVideo != null) {
+                Log.wtf("mYoutubePlayer", "!null");
+                if (mYoutubePlayer.isPlaying() || isLoading || !isInitialized) {
+                    Log.wtf("isPlaying() || isLoading", "true");
 
-        if (mYoutubePlayer != null && mVideo != null) {
-            Log.wtf("mYoutubePlayer", "!null");
-            if (mYoutubePlayer.isPlaying() || isLoading || !isInitialized) {
-                Log.wtf("isPlaying() || isLoading", "true");
-
-                // setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
-                // mYoutubePlayer.release();
-                mYoutubePlayer = null;
-                isPlaying = false;
-                removePlaying(mVideo);
-                mVideo = null;
-                isLoading = false;
-                if (containerTag != null && thumbnailTag != null) {
-                    FrameLayout previousContainer = (FrameLayout) ((ListView) holder.root.getParent()).findViewWithTag(containerTag);
-                    ImageView previousThumbnail = (ImageView) previousContainer.findViewById(R.id.thumbnail);
-                    setVideoLoadingAnimation(previousThumbnail, 0, 1.0f);
-                    HomeFragment.isFirstPlaying = false;
+                    // setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
+                    // mYoutubePlayer.release();
+                    mYoutubePlayer = null;
+                    isPlaying = false;
+                    removePlaying(mVideo);
+                    mVideo = null;
+                    isLoading = false;
+                    if (containerTag != null && thumbnailTag != null) {
+                        FrameLayout previousContainer = (FrameLayout) ((ListView) holder.root.getParent()).findViewWithTag(containerTag);
+                        ImageView previousThumbnail = (ImageView) previousContainer.findViewById(R.id.thumbnail);
+                        setVideoLoadingAnimation(previousThumbnail, 0, 1.0f);
+                        HomeFragment.isFirstPlaying = false;
+                    }
                 }
             }
-        }
-        HomeFragment.clickedPosition = position;
-        holder.thumbnail.setTag(itemData.videoUrl);
-        thumbnailTag = (String) holder.thumbnail.getTag();
-        holder.videoContainer.setId(MainActivity.generateViewId());
-        holder.videoContainer.setTag(itemData.videoUrl);
-        containerTag = (String) holder.videoContainer.getTag();
-        mVideo = YouTubePlayerSupportFragment.newInstance();
-        isInitialized = false;
-        final String videoUrl = itemData.videoUrl;
-        showVideo(mVideo);
-        mVideo.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-                isInitialized = true;
-                if (!wasRestored) {
-                    mYoutubePlayer = youTubePlayer;
-                    mYoutubePlayer.loadVideo(videoUrl);
-                    mYoutubePlayer.setPlaybackEventListener(YouTubeVideo.this);
-                    mYoutubePlayer.setPlayerStateChangeListener(YouTubeVideo.this);
-                    mYoutubePlayer.setShowFullscreenButton(false);
-                } else
-                    Log.e("wasRestored", "true");
-            }
+            HomeFragment.clickedPosition = position;
+            holder.thumbnail.setTag(itemData.videoUrl);
+            thumbnailTag = (String) holder.thumbnail.getTag();
+            holder.videoContainer.setId(MainActivity.generateViewId());
+            holder.videoContainer.setTag(itemData.videoUrl);
+            containerTag = (String) holder.videoContainer.getTag();
+            mVideo = YouTubePlayerSupportFragment.newInstance();
+            isInitialized = false;
+            final String videoUrl = itemData.videoUrl;
+            showVideo(mVideo);
+            mVideo.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                    isInitialized = true;
+                    if (!wasRestored) {
+                        mYoutubePlayer = youTubePlayer;
+                        mYoutubePlayer.loadVideo(videoUrl);
+                        mYoutubePlayer.setPlaybackEventListener(YouTubeVideo.this);
+                        mYoutubePlayer.setPlayerStateChangeListener(YouTubeVideo.this);
+                        mYoutubePlayer.setShowFullscreenButton(false);
+                    } else
+                        Log.e("wasRestored", "true");
+                }
 
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                Toast.makeText(context, youTubeInitializationResult.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Toast.makeText(context, youTubeInitializationResult.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Intent videoClient = new Intent(Intent.ACTION_VIEW);
+            videoClient.setData(Uri.parse("https://www.youtube.com/watch?v="+itemData.videoUrl));
+            activity.startActivity(videoClient);
+
+        }
     }
 
     @Override
@@ -185,8 +194,6 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
         isPlaying = false;
         removePlaying(mVideo);
         setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
-
-
     }
 
     @Override
