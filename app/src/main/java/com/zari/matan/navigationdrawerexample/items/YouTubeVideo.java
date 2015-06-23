@@ -136,8 +136,8 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
                         FrameLayout previousContainer = (FrameLayout) ((ListView) holder.root.getParent()).findViewWithTag(containerTag);
                         ImageView previousThumbnail = (ImageView) previousContainer.findViewById(R.id.thumbnail);
                         setVideoLoadingAnimation(previousThumbnail, 0, 1.0f);
-                        HomeFragment.isFirstPlaying = false;
                     }
+                    HomeFragment.isFirstPlaying = false;
                 }
             }
             HomeFragment.clickedPosition = position;
@@ -171,7 +171,7 @@ public class YouTubeVideo implements FeedItem, View.OnClickListener, YouTubePlay
             });
         }else{
             Intent videoClient = new Intent(Intent.ACTION_VIEW);
-            videoClient.setData(Uri.parse("https://www.youtube.com/watch?v="+itemData.videoUrl));
+            videoClient.setData(Uri.parse("https://www.youtube.com/watch?v=" + itemData.videoUrl));
             activity.startActivity(videoClient);
 
         }
