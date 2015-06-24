@@ -32,14 +32,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/webViewContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:visibility="gone">
-
-    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/feedPreLoader"
@@ -55,6 +47,14 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         >
+    <RelativeLayout
+        android:id="@+id/webViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:visibility="gone">
+
+    </RelativeLayout>
 
 
     </FrameLayout>

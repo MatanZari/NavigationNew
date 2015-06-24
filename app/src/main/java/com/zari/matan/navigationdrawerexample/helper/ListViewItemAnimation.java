@@ -127,6 +127,7 @@ public class ListViewItemAnimation {
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
+                                listItem.setAlpha(1);
                                 listItem.setTranslationX(0);
                                 if (openUrl) {
                                     swipeCallback.onSwipe();

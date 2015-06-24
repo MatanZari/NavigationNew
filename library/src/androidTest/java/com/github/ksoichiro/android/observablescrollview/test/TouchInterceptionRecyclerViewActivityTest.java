@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 
 public class TouchInterceptionRecyclerViewActivityTest extends ActivityInstrumentationTestCase2<TouchInterceptionRecyclerViewActivity> {

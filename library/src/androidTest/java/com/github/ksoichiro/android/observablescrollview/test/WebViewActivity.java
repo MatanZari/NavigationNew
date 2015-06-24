@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.github.ksoichiro.android.observablescrollview.Scrollable;
 
 public class WebViewActivity extends Activity implements ObservableScrollViewCallbacks {
 

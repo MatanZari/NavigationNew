@@ -3,7 +3,6 @@ package com.zari.matan.navigationdrawerexample.Network;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
 import com.zari.matan.navigationdrawerexample.MainActivity;
 
 import java.io.BufferedReader;

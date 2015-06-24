@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,11 +24,13 @@ import android.widget.TextView;
 
 import com.lyuzik.remoteimageview.RImageView;
 import com.zari.matan.navigationdrawerexample.FeedAdapter;
-import com.zari.matan.navigationdrawerexample.MainActivity;
 import com.zari.matan.navigationdrawerexample.R;
+import com.zari.matan.navigationdrawerexample.fragments.HomeFragment;
 import com.zari.matan.navigationdrawerexample.helper.Utils;
 
 import java.io.IOException;
+
+import static com.zari.matan.navigationdrawerexample.MainActivity.mMediaPlayer;
 
 
 /**
@@ -43,13 +44,13 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
 
     Context context;
     ItemData itemData;
-    private MediaPlayer mMediaPlayer;
+    // private MediaPlayer mMediaPlayer;
     public static boolean isPlaying = false;
     ViewHolder holder = null;
-    public static MediaController mController;
-    private Handler handler = new Handler();
     FrameLayout videoContainer;
     int dp = Utils.getDP1();
+    private int position;
+    public boolean disableClick;
 
     public MP4VideoItem(Context context, ItemData itemData) {
         this.context = context;
@@ -107,15 +108,16 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
         holder.video.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (mController != null && holder.video.isAvailable()) {
-                    if (mController.isShowing()) {
-                        mController.hide();
-                    } else {
-                        mController.show(1000);
-                    }
+                if (mMediaPlayer != null &&
+                        holder.loader.getVisibility() != View.VISIBLE &&
+                        holder.play.getVisibility() != View.VISIBLE &&
+                        position == HomeFragment.mp4ClickedPosition) {
+                    if (mMediaPlayer.isPlaying())
+                        mMediaPlayer.pause();
+                    else
+                        mMediaPlayer.start();
+
                 }
-
-
                 return false;
             }
         });
@@ -133,11 +135,10 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Surface s = new Surface(surface);
         try {
-            if (MainActivity.mMediaPlayer != null) {
-                MainActivity.mMediaPlayer = null;
+            if (mMediaPlayer != null) {
+                mMediaPlayer = null;
             }
-            MainActivity.mMediaPlayer = new MediaPlayer();
-            mMediaPlayer = MainActivity.mMediaPlayer;
+            mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setDataSource(itemData.videoUrl);
             mMediaPlayer.setSurface(s);
@@ -147,7 +148,6 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
             mMediaPlayer.setOnCompletionListener(this);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setOnVideoSizeChangedListener(this);
-            mController = new MediaController(context);
         } catch (IllegalArgumentException
                 | IllegalStateException
                 | SecurityException
@@ -178,9 +178,6 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
     public void onCompletion(MediaPlayer mp) {
         if (holder != null) {
             mMediaPlayer.release();
-            if (mController.isShowing())
-                mController.hide();
-            mController = null;
             setVideoLoadingAnimation(holder.video, 1.0f, 0);
             setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
             holder.play.setVisibility(View.VISIBLE);
@@ -191,15 +188,6 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mController.setMediaPlayer(this);
-        handler.post(new Runnable() {
-
-            public void run() {
-                mController.setEnabled(true);
-                mController.show(1000);
-            }
-        });
-        mController.setAnchorView(holder.video);
         setVideoLoadingAnimation(holder.thumbnail, 1.0f, 0);
         setVideoLoadingAnimation(holder.video, 0, 1.0f);
         holder.loader.setVisibility(View.GONE);
@@ -213,21 +201,22 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
 
     @Override
     public void onClick(View v) {
-        if (holder != null && holder.video != null) {
-            if (mMediaPlayer != null) {
-                if (isPlaying)
-                    mMediaPlayer.stop();
-                mMediaPlayer.release();
-                MainActivity.mMediaPlayer = null;
-                holder.video.setSurfaceTextureListener(null);
-            }
-            if (holder.video.isAvailable()) {
-                onSurfaceTextureAvailable(holder.video.getSurfaceTexture(), holder.video.getWidth(), holder.video.getHeight());
-            }
-            holder.play.setVisibility(View.GONE);
-            holder.video.setSurfaceTextureListener(this);
-            holder.loader.setVisibility(View.VISIBLE);
+        if (disableClick)return;
+        if (mMediaPlayer != null) {
+            if (isPlaying)
+                mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            holder.video.setSurfaceTextureListener(null);
         }
+        if (holder.video.isAvailable()) {
+            onSurfaceTextureAvailable(holder.video.getSurfaceTexture(), holder.video.getWidth(), holder.video.getHeight());
+        }
+        HomeFragment.mp4ClickedPosition = position;
+        holder.play.setVisibility(View.GONE);
+        holder.video.setSurfaceTextureListener(this);
+        holder.loader.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -248,9 +237,6 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
         mMediaPlayer.pause();
         if (holder != null) {
             mMediaPlayer.release();
-            if (mController.isShowing())
-                mController.hide();
-            mController = null;
             setVideoLoadingAnimation(holder.video, 1.0f, 0);
             setVideoLoadingAnimation(holder.thumbnail, 0, 1.0f);
             holder.play.setVisibility(View.VISIBLE);
@@ -322,6 +308,9 @@ public class MP4VideoItem implements FeedItem, TextureView.SurfaceTextureListene
     }
 
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
 
     private class ViewHolder {

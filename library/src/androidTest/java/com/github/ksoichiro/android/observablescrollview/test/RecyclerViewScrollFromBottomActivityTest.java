@@ -3,7 +3,6 @@ package com.github.ksoichiro.android.observablescrollview.test;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 
 public class RecyclerViewScrollFromBottomActivityTest extends ActivityInstrumentationTestCase2<RecyclerViewScrollFromBottomActivity> {

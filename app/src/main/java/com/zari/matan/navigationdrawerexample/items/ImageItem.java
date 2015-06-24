@@ -3,11 +3,12 @@ package com.zari.matan.navigationdrawerexample.items;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.view.GravityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -125,6 +126,7 @@ public class ImageItem implements FeedItem, View.OnClickListener, ListViewItemAn
 
     @Override
     public void onSwipe() {
+        Log.e("onSwipe","onSwipe");
         openWeb(itemData.externalUrl);
     }
 
@@ -150,7 +152,7 @@ public class ImageItem implements FeedItem, View.OnClickListener, ListViewItemAn
         webView.loadUrl(url);
         RImageView x = new RImageView(context);
         LinearLayout linearLayout = new LinearLayout(context);
-
+        webView.getSettings().setDomStorageEnabled(true);
 
         x.setImageResource(R.drawable.x);
         x.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -170,25 +172,24 @@ public class ImageItem implements FeedItem, View.OnClickListener, ListViewItemAn
         linearLayout.addView(x);
         linearLayout.setBackgroundColor(Color.parseColor("#80000000"));
         holder.webViewContainer.setVisibility(View.VISIBLE);
+        holder.webViewContainer.setGravity(GravityCompat.END);
         x.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 webView.clearHistory();
                 holder.webViewContainer.removeAllViews();
                 holder.webViewContainer.setVisibility(View.GONE);
-
-
             }
         });
         webView.setVisibility(View.VISIBLE);
-        webView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-                view.loadUrl(url);
-                return true;
-            }
-        });
+//        webView.setWebViewClient(new WebViewClient() {
+//
+//            @Override
+//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//
+//                view.loadUrl(url);
+//                return true;
+//            }
+//        });
     }
 }

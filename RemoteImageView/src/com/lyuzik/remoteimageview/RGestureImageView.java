@@ -1,9 +1,5 @@
 package com.lyuzik.remoteimageview;
 
-import java.io.InputStream;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -21,6 +17,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+
+import java.io.InputStream;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class RGestureImageView extends RImageView {
 

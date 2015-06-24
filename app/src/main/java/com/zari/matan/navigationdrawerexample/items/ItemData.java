@@ -5,7 +5,6 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.webkit.URLUtil;
 
-
 import com.zari.matan.navigationdrawerexample.R;
 
 import org.json.JSONException;

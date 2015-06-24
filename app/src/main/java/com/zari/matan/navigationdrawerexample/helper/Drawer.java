@@ -10,7 +10,7 @@ import android.view.MotionEvent;
  */
 public class Drawer extends DrawerLayout {
 
-    boolean shouldDispatchTouchEvent;
+    boolean shouldDispatchTouchEvent = true;
 
     public boolean shouldDispatchTouchEvent() {
 
@@ -33,11 +33,6 @@ public class Drawer extends DrawerLayout {
         super(context, attrs, defStyle);
     }
 
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return !shouldDispatchTouchEvent;
-    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {

@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     public static boolean isFirstPlaying;
     int firstVisible;
     public static int clickedPosition;
-
+    public static int mp4ClickedPosition;
 
 
     @Override
@@ -220,9 +220,11 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                             data.add(new GifItem(activity, itemData));
 
                     } else if (itemData.type.equals("video") && !itemData.source.equals("youtube") && !itemData.source.equals("vimeo")) {
-                        data.add(new MP4VideoItem(activity, itemData));
+                        MP4VideoItem mp4VideoItem = new MP4VideoItem(activity, itemData);
+                        mp4VideoItem.setPosition(i);
+                        data.add(mp4VideoItem);
                     } else if (itemData.type.equals("video") && itemData.source.equals("youtube")) {
-                        YouTubeVideo youTubeVideo = new YouTubeVideo(activity,itemData);
+                        YouTubeVideo youTubeVideo = new YouTubeVideo(activity, itemData);
                         youTubeVideo.setPosition(i);
                         data.add(youTubeVideo);
                     } else if (itemData.type.equals("post")) {
@@ -259,36 +261,47 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
         for (int i = 0; i < visibleItemCount; i++) {
             View listItem = view.getChildAt(i);
             int viewType = adapter.getItemViewType(firstVisibleItem);
-            if (i == 0) {
-                if (mMediaPlayer != null && viewType == FeedAdapter.types.MP4VIDEO.ordinal() && MP4VideoItem.mController != null) {
-                    if (listItem.getTop() < -listItem.getHeight() * 0.75) {
-                        if (!isPlayerReset) {
-                            MP4VideoItem item = (MP4VideoItem) adapter.getItem(firstVisibleItem);
-                            item.onCompletion(mMediaPlayer);
-                            mMediaPlayer = null;
-                            isPlayerReset = true;
-                        } else
-                            return;
-                    }
-                } else if (mYoutubePlayer != null
-                        && viewType == FeedAdapter.types.YOUTUBEVIDEO.ordinal()) {
-                    if (firstVisible != firstVisibleItem) {
-                        firstVisible = firstVisibleItem;
-                        isFirstPlaying = true;
-                    }
-                    ytv = (YouTubeVideo) adapter.getItem(firstVisibleItem);
-                    if (listItem.getTop() < -listItem.getHeight() / 2) {
-                        if (isFirstPlaying && clickedPosition == firstVisibleItem) {
-                            ytv.onVideoEnded();
-                            isFirstPlaying = false;
-                        }
-                    } else
-                        return;
-                } else {
-                    isPlayerReset = false;
-                    return;
+
+            if (firstVisibleItem > 0) {
+                if (adapter.getItem(firstVisibleItem - 1) instanceof MP4VideoItem) {
+                    ((MP4VideoItem) adapter.getItem(firstVisibleItem - 1)).disableClick = mMediaPlayer != null;
                 }
             }
+            if (adapter.getItem(firstVisibleItem + 1) instanceof MP4VideoItem) {
+                ((MP4VideoItem) adapter.getItem(firstVisibleItem + 1)).disableClick = mMediaPlayer != null;
+            }
+
+            if (viewType == FeedAdapter.types.MP4VIDEO.ordinal()) {
+
+                MP4VideoItem item = (MP4VideoItem) adapter.getItem(firstVisibleItem);
+                item.disableClick = mMediaPlayer != null;
+                if (listItem.getTop() < -listItem.getHeight() * 0.75 && mMediaPlayer != null) {
+                    if (mp4ClickedPosition == firstVisibleItem) {
+                        item.onCompletion(mMediaPlayer);
+                        mMediaPlayer = null;
+
+                    }
+                    else
+                        return;
+                }
+            } else if (mYoutubePlayer != null
+                    && viewType == FeedAdapter.types.YOUTUBEVIDEO.ordinal()) {
+                if (firstVisible != firstVisibleItem) {
+                    firstVisible = firstVisibleItem;
+                    isFirstPlaying = true;
+                }
+                ytv = (YouTubeVideo) adapter.getItem(firstVisibleItem);
+                if (listItem.getTop() < -listItem.getHeight() / 2) {
+                    if (isFirstPlaying && clickedPosition == firstVisibleItem) {
+                        ytv.onVideoEnded();
+                        isFirstPlaying = false;
+                    }
+                }
+                else
+                    return;
+            }
+            else
+                return;
         }
     }
 
