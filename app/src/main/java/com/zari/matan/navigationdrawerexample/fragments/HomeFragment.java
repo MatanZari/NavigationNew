@@ -66,7 +66,6 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
     ProgressBar feedPreLoader;
     MainHttpTask httpTask;
     Executor executor;
-    private boolean isPlayerReset;
     YouTubeVideo ytv;
     public static boolean isFirstPlaying;
     int firstVisible;
@@ -122,11 +121,11 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
 
     @Override
     public void openZoom(ItemData itemData) {
-
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1.0f);
         alphaAnimation.setDuration(300);
         zoomContainer.removeAllViews();
         zoomContainer.addView(imagePreLoader);
+
         alphaAnimation.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(android.view.animation.Animation animation) {
@@ -145,8 +144,9 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
 
             }
         });
+
         zoomContainer.startAnimation(alphaAnimation);
-        gestureImageView = (RGestureImageView) LayoutInflater.from(getActivity()).inflate(R.layout.expended_image, zoomContainer, false);
+        gestureImageView = (RGestureImageView) LayoutInflater.from(activity).inflate(R.layout.expended_image, zoomContainer, false);
         gestureImageView.setTargetSize(500, 500);
         gestureImageView.setAdjustViewBounds(true);
         gestureImageView.loadImageBitmap(itemData.img, onCompleteCB, true);
@@ -279,9 +279,7 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                     if (mp4ClickedPosition == firstVisibleItem) {
                         item.onCompletion(mMediaPlayer);
                         mMediaPlayer = null;
-
-                    }
-                    else
+                    } else
                         return;
                 }
             } else if (mYoutubePlayer != null
@@ -296,11 +294,9 @@ public class HomeFragment extends Fragment implements FragmentUiLifeCycleHelper,
                         ytv.onVideoEnded();
                         isFirstPlaying = false;
                     }
-                }
-                else
+                } else
                     return;
-            }
-            else
+            } else
                 return;
         }
     }

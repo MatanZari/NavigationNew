@@ -27,15 +27,15 @@ import com.zari.matan.navigationdrawerexample.helper.Utils;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private boolean mUserLearnedDrawer;
     private static final String KEY_DRAWER_OPENED = "user_opened";
-    public  NavigationView navDrawer;
+    public NavigationView navDrawer;
     static AtomicInteger sNextGeneratedId = new AtomicInteger(1);
-
+    int visiblePosition = 0;
     Fragment[] fragments = new Fragment[]{
             new HomeFragment(),
             new DiscoverFragment(),
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean drawerOpen;
     public FrameLayout container;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,39 +70,50 @@ public class MainActivity extends AppCompatActivity {
         navDrawer = (NavigationView) findViewById(R.id.navigation);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navDrawer.getMenu().getItem(0).setChecked(true);
-        switchFragments(container.getId(), fragments[0]);
-        if (!mUserLearnedDrawer){
-             mDrawerLayout.openDrawer(GravityCompat.START);
-            saveToPrefs(this,KEY_DRAWER_OPENED,String.valueOf(true));
+        switchFragments(container.getId(), fragments[0], null);
+        if (!mUserLearnedDrawer) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            saveToPrefs(this, KEY_DRAWER_OPENED, String.valueOf(true));
         }
         setDrawer(mDrawerLayout, toolbar);
-        navDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-
-
-                switch (menuItem.getItemId()) {
-                    case R.id.red:
-                        switchFragments(container.getId(), fragments[0]);
-                        break;
-
-                    case R.id.green:
-                        switchFragments(container.getId(), fragments[1]);
-                        break;
-
-                    case R.id.blue:
-                        switchFragments(container.getId(), fragments[2]);
-                        break;
-
-                }
-                mDrawerLayout.closeDrawers();
-                return true;
-            }
-        });
+        navDrawer.setNavigationItemSelectedListener(this);
 
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        menuItem.setChecked(true);
+
+        navDrawer.getMenu().getItem(visiblePosition);
+        switch (menuItem.getItemId()) {
+            case R.id.red:
+                if (fragments[0].isAdded())
+                    break;
+
+                switchFragments(container.getId(), fragments[0], fragments[visiblePosition]);
+                visiblePosition = 0;
+                break;
+
+            case R.id.green:
+                if (fragments[1].isAdded())
+                    break;
+
+                switchFragments(container.getId(), fragments[1], fragments[visiblePosition]);
+                visiblePosition = 1;
+                break;
+
+            case R.id.blue:
+                if (fragments[2].isAdded())
+                    break;
+
+                switchFragments(container.getId(), fragments[2], fragments[visiblePosition]);
+                visiblePosition = 2;
+                break;
+
+        }
+        mDrawerLayout.closeDrawers();
+        return true;
+    }
 
     public void setDrawer(final DrawerLayout drawerLayout, Toolbar toolbar) {
 
@@ -149,10 +161,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void switchFragments(int containerId, Fragment fragmentToShow) {
+    public void switchFragments(int containerId, Fragment fragmentToShow, Fragment fragmentToReplace) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(containerId, fragmentToShow).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+        if (fragmentToReplace != null) {
+                transaction.remove(fragmentToReplace);
+        }
+        transaction.add(containerId, fragmentToShow).commit();
 
 
     }
@@ -168,8 +183,8 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public  boolean isInternetConnected(){
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    public boolean isInternetConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
@@ -177,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static int generateViewId() {
-        for (;;) {
+        for (; ; ) {
             final int result = sNextGeneratedId.get();
             int newValue = result + 1;
             if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.

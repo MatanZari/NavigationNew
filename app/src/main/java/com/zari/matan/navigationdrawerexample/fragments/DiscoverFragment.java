@@ -25,7 +25,7 @@ public class DiscoverFragment extends Fragment {
         View pageLayout = inflater.inflate(R.layout.user_profile_fragment,container,false);
         //rImageView = (RImageView) pageLayout.findViewById(R.id.profile_picture);
         toolbar = (Toolbar) pageLayout.findViewById(R.id.toolbar);
-
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
         return  pageLayout;
     }
